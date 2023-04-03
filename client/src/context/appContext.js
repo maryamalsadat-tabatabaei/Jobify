@@ -27,13 +27,25 @@ const initialState = {
   jobType: "full-time",
   statusOptions: ["pending", "interview", "declined"],
   status: "pending",
+  jobs: [],
+  totalJobs: 0,
+  numOfPages: 1,
+  page: 1,
+  status: {},
+  monthlyStataus: [],
+  searchPosition: "",
+  searchCompany: "",
+  searchStatus: "all",
+  searchJobType: "all",
+  sort: "latest",
+  sortOptions: ["latest", "oldest", "a-z", "z-a"],
 };
 
 const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const authRequest = axios.create({
-    baseURL: "/api/av1",
+    baseURL: "http://localhost:8000/api/v1",
   });
 
   authRequest.interceptors.request.use(
@@ -51,8 +63,8 @@ const AppProvider = ({ children }) => {
       return response;
     },
     (error) => {
-      console.log(error.response);
-      if (error.response.status === 401) {
+      console.log(error);
+      if (error.status === 401) {
         logoutUser();
       }
       return Promise.reject(error);
@@ -130,7 +142,7 @@ const AppProvider = ({ children }) => {
       // if no token
       // addUserToLocalStorage({ user, location, token: initialState.token });
     } catch (error) {
-      if (error.response.status !== 401) {
+      if (error.status !== 401) {
         dispatch({
           type: actions.AUTHENTICATE_USER_REJECTED,
           payload: { msg: error.msg },
@@ -159,13 +171,108 @@ const AppProvider = ({ children }) => {
       dispatch({ type: actions.CREATE_JOB_SUCCESS });
       dispatch({ type: actions.CLEAR_VALUES });
     } catch (error) {
-      if (error.response.status === 401) return;
+      if (error.status === 401) return;
       dispatch({
         type: actions.CREATE_JOB_ERROR,
-        payload: { msg: error.response.data.msg },
+        payload: { msg: error.msg },
       });
     }
     clearAlert();
+  };
+  const getJobs = async () => {
+    const {
+      searchCompany,
+      searchPosition,
+      searchJobType,
+      searchStatus,
+      sort,
+      page,
+    } = state;
+    let url = `/jobs?page=${page}&jobType=${searchJobType}&status=${searchStatus}&sort=${sort}`;
+    if (searchPosition) {
+      url = url + `&position=${searchPosition}`;
+    }
+    if (searchCompany) {
+      url = url + `&company=${searchCompany}`;
+    }
+    dispatch({ type: actions.GET_JOBS_PENDING });
+    try {
+      const { data } = await authRequest(url);
+      const { jobs, totalJobs, numOfPages } = data;
+      dispatch({
+        type: actions.GET_JOBS_SUCCESS,
+        payload: { jobs, totalJobs, numOfPages },
+      });
+    } catch (error) {
+      if (error.status === 401) return;
+      dispatch({
+        type: actions.GET_JOBS_ERROR,
+        payload: { msg: error.msg },
+      });
+    }
+    clearAlert();
+  };
+  const setEditJob = (id) => {
+    dispatch({ type: actions.SET_EDIT_JOB, payload: { id } });
+  };
+  const editJob = async () => {
+    dispatch({ type: actions.EDIT_JOB_PENDING });
+    const { position, company, jobLocation, jobType, status } = state;
+    try {
+      await authRequest.patch(`/jobs/${state.editJobId}`, {
+        company,
+        position,
+        jobLocation,
+        jobType,
+        status,
+      });
+
+      dispatch({
+        type: actions.EDIT_JOB_SUCCESS,
+      });
+      dispatch({ type: actions.CLEAR_VALUES });
+    } catch (error) {
+      if (error.status === 401) return;
+      dispatch({
+        type: actions.GET_JOBS_ERROR,
+        payload: { msg: error.msg },
+      });
+    }
+    clearAlert();
+  };
+  const deleteJob = async (id) => {
+    dispatch({ type: actions.DELETE_JOB_PENDING });
+
+    try {
+      await authRequest.delete(`/jobs/${id}`);
+      getJobs();
+    } catch (error) {}
+  };
+  const showStatus = async () => {
+    dispatch({ type: actions.SHOW_STATS_PENDING });
+    try {
+      const { data } = await authRequest("/jobs/stats");
+      dispatch({
+        type: actions.SHOW_STATS_SUCCESS,
+        payload: {
+          stats: data.defaultStatus,
+          monthlyStatus: data.monthlyStatus,
+        },
+      });
+    } catch (error) {
+      console.log(error.response);
+      // logoutUser()
+    }
+
+    clearAlert();
+  };
+
+  const clearFilters = () => {
+    dispatch({ type: actions.CLEAR_FILTERS });
+  };
+
+  const changePage = (page) => {
+    dispatch({ type: actions.CHANGE_PAGE, payload: { page } });
   };
   return (
     <AppContext.Provider
@@ -179,6 +286,13 @@ const AppProvider = ({ children }) => {
         handleChange,
         clearValues,
         createJob,
+        getJobs,
+        deleteJob,
+        setEditJob,
+        editJob,
+        showStatus,
+        clearFilters,
+        changePage,
       }}
     >
       {children}

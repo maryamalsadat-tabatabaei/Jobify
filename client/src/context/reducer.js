@@ -90,6 +90,7 @@ const reducer = (state, action) => {
     case actions.HANDLE_CHANGE: {
       return {
         ...state,
+        page: 1,
         [action.payload.name]: action.payload.value,
       };
     }
@@ -99,11 +100,11 @@ const reducer = (state, action) => {
         editJobId: "",
         position: "",
         company: "",
-        jobLocation: state.userLocation,
+        jobLocation: state.userLocation || "",
         jobType: "full-time",
         status: "pending",
       };
-      return { ...state, initialjobState };
+      return { ...state, ...initialjobState };
     }
     case actions.CREATE_JOB_PENDING: {
       return { ...state, isLoading: true };
@@ -124,6 +125,96 @@ const reducer = (state, action) => {
         showAlert: true,
         alertType: "danger",
         alertText: action.payload.msg,
+      };
+    }
+    case actions.GET_JOBS_PENDING: {
+      return { ...state, isLoading: true, showAlert: false };
+    }
+    case actions.GET_JOBS_SUCCESS: {
+      return {
+        ...state,
+        isLoading: false,
+        jobs: action.payload.jobs,
+        totalJobs: action.payload.totalJobs,
+        numOfPages: action.payload.numOfPages,
+      };
+    }
+    case actions.GET_JOBS_ERROR: {
+      return {
+        ...state,
+        isLoading: false,
+        showAlert: true,
+        alertType: "danger",
+        alertText: action.payload.msg,
+      };
+    }
+    case actions.SET_EDIT_JOB: {
+      const job = state.jobs.find((job) => job._id === action.payload.id);
+      const { _id, position, company, jobLocation, jobType, status } = job;
+      return {
+        ...state,
+        isEditing: true,
+        editJobId: _id,
+        position,
+        company,
+        jobLocation,
+        jobType,
+        status,
+      };
+    }
+    case actions.DELETE_JOB_PENDING: {
+      return { ...state, isLoading: true };
+    }
+    case actions.EDIT_JOB_PENDING: {
+      return { ...state, isLoading: true };
+    }
+    case actions.EDIT_JOB_SUCCESS: {
+      return {
+        ...state,
+        isLoading: false,
+        showAlert: true,
+        alertType: "success",
+        alertText: "Job Updated!",
+      };
+    }
+    case actions.EDIT_JOB_ERROR: {
+      return {
+        ...state,
+        isLoading: false,
+        showAlert: true,
+        alertType: "danger",
+        alertText: action.payload.msg,
+      };
+    }
+    case actions.SHOW_STATS_PENDING: {
+      return {
+        ...state,
+        isLoading: true,
+        showAlert: false,
+      };
+    }
+    case actions.SHOW_STATS_SUCCESS: {
+      return {
+        ...state,
+        status: action.payload.stats,
+        monthlyStataus: action.payload.monthlyStatus,
+      };
+    }
+    case actions.CLEAR_FILTERS: {
+      return {
+        ...state,
+        page: 1,
+        searchPosition: "",
+        searchCompany: "",
+        searchStatus: "all",
+        searchJobType: "all",
+        sort: "latest",
+      };
+    }
+    case actions.CHANGE_PAGE: {
+      return {
+        ...state,
+        page: action.payload.page,
       };
     }
     default:

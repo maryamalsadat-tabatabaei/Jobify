@@ -1,5 +1,5 @@
 const FormRowSelect = ({
-  labeltext,
+  labelText,
   name,
   value,
   list: selectList,
@@ -8,7 +8,7 @@ const FormRowSelect = ({
   return (
     <div className="form-row">
       <label htmlFor={name} className="form-label">
-        {labeltext || name}
+        {labelText || name}
       </label>
       <select
         name={name}

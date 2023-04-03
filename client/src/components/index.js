@@ -5,6 +5,17 @@ import SmallSidebar from "./SmallSidebar";
 import Navbar from "./Navbar";
 import BigSidebar from "./BigSidebar";
 import FormRowSelect from "./FormRowSelect";
+import JobsContainer from "./JobsContainer";
+import SearchContainer from "./SearchContainer";
+import Job from "./Job";
+import JobInfo from "./JobInfo";
+import Loading from "./Loading";
+
+import AreaChart from "./AreaChart";
+import BarChart from "./BarChart";
+import ChartsContainer from "./ChartsContainer";
+import StatsContainer from "./StatsContainer";
+import StatItem from "./StatItem";
 
 export {
   Logo,
@@ -14,4 +25,14 @@ export {
   SmallSidebar,
   Navbar,
   FormRowSelect,
+  Loading,
+  Job,
+  JobInfo,
+  JobsContainer,
+  SearchContainer,
+  StatItem,
+  StatsContainer,
+  ChartsContainer,
+  BarChart,
+  AreaChart,
 };

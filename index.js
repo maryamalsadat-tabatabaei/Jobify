@@ -1,4 +1,6 @@
 const express = require("express");
+// require("./populate");
+const path = require("path");
 const notFoundMiddleware = require("./middleware/not-found");
 const errorHandlerMiddleware = require("./middleware/error-handler");
 require("dotenv").config();
@@ -8,19 +10,27 @@ const mongoose = require("mongoose");
 const authRoutes = require("./routes/auth-routes");
 const jobRoutes = require("./routes/job-routes");
 const authenticateUser = require("./middleware/auth");
+import helmet from "helmet";
+import xss from "xss-clean";
+import mongoSanitize from "express-mongo-sanitize";
 
 const app = express();
 app.use(
   cors({
     origin: ["http://localhost:3000"],
-    methods: "GET,POST,PUT,DELETE,OPTIONS",
+    methods: "GET,POST,PUT,DELETE,OPTIONS,PATCH",
     credentials: true,
   })
 );
 if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
 }
+app.use(express.static(path.resolve(__dirname, "./client/build")));
 app.use(express.json());
+app.use(helmet());
+app.use(xss());
+app.use(mongoSanitize());
+
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -32,6 +42,10 @@ app.use((req, res, next) => {
 });
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/jobs", authenticateUser, jobRoutes);
+// only when ready to deploy
+app.get("*", function (request, response) {
+  response.sendFile(path.resolve(__dirname, "./client/build", "index.html"));
+});
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 

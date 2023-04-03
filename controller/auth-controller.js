@@ -36,7 +36,7 @@ exports.login = async (req, res, next) => {
   const user = await User.findOne({ email }).select("+password");
   if (!user) {
     const error = new HttpError(
-      "User already exists",
+      "Cannot find the user",
       StatusCodes.UNAUTHORIZED
     );
     return next(error);
@@ -44,7 +44,7 @@ exports.login = async (req, res, next) => {
   const isPasswordmatch = await user.comparePassword(password);
   if (!isPasswordmatch) {
     const error = new HttpError(
-      "User already exists",
+      "Cannot find the user with this password",
       StatusCodes.UNAUTHORIZED
     );
     return next(error);
