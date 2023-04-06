@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { FaAlignLeft, FaUserCircle, FaCaretDown } from "react-icons/fa";
+import {
+  FaAlignLeft,
+  FaUserCircle,
+  FaCaretDown,
+  FaCreditCard,
+} from "react-icons/fa";
 import { useAppContext } from "../context/appContext";
 import Logo from "./Logo";
 import Wrapper from "../assets/wrappers/Navbar";
@@ -18,10 +23,20 @@ const Navbar = () => {
           <h3 className="logo-text">dashboard</h3>
         </div>
 
+        {/* <div className="btn-container">
+          <button
+            className="btn btn-danger"
+            onClick={() => setShowLogout(!showLogout)}
+          >
+            <FaCreditCard />
+            add credits
+          </button>
+        </div> */}
+
         <div className="btn-container">
           <button className="btn" onClick={() => setShowLogout(!showLogout)}>
             <FaUserCircle />
-            john
+            {user.name} {user.credits} credits
             <FaCaretDown />
           </button>
           <div className={showLogout ? "dropdown show-dropdown" : "dropdown"}>

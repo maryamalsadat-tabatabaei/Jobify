@@ -1,4 +1,10 @@
-import { FormRow, Alert, FormRowSelect } from "../../components";
+import {
+  FormRow,
+  Alert,
+  FormRowSelect,
+  EmailComponent,
+} from "../../components";
+import { Link } from "react-router-dom";
 import { useAppContext } from "../../context/appContext";
 import Wrapper from "../../assets/wrappers/DashboardFormPage";
 
@@ -12,8 +18,8 @@ const AddJob = () => {
     jobLocation,
     jobType,
     jobTypeOptions,
-    status,
-    statusOptions,
+    jobStatus,
+    jobStatusOptions,
     handleChange,
     clearValues,
     createJob,
@@ -43,7 +49,13 @@ const AddJob = () => {
   return (
     <Wrapper>
       <form className="form">
-        <h3>{isEditing ? "edit job" : "add job"} </h3>
+        <div className="form-header">
+          <h3>{isEditing ? "edit job" : "add job"} </h3>
+          <Link to="/send-email" className="btn btn-danger">
+            Email
+          </Link>
+        </div>
+
         {showAlert && <Alert />}
 
         <div className="form-center">
@@ -67,10 +79,11 @@ const AddJob = () => {
             handleChange={handleJobInput}
           />
           <FormRowSelect
-            name="status"
-            value={status}
+            labelText="status"
+            name="jobStatus"
+            value={jobStatus}
             handleChange={handleJobInput}
-            list={statusOptions}
+            list={jobStatusOptions}
           />
           <FormRowSelect
             labelText="type"

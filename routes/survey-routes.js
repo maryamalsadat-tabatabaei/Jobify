@@ -1,6 +1,7 @@
 const express = require("express");
-const authController = require("../controller/auth-controller");
+const surveyController = require("../controller/survey-controller");
 const authenticateUser = require("../middleware/auth");
+const checkCredits = require("../middleware/check-credits");
 const router = express.Router();
 const rateLimiter = require("express-rate-limit");
 
@@ -9,9 +10,13 @@ const apiLimiter = rateLimiter({
   max: 10,
   message: "Too many requests from this IP, please try again after 15 minutes",
 });
-
-router.post("/register", apiLimiter, authController.register);
-router.post("/login", apiLimiter, authController.login);
-router.patch("/updateUser", authenticateUser, authController.updateUser);
+router.get("/:surveyId/:choice", surveyController.getFeedback);
+router.post("/", checkCredits, apiLimiter, surveyController.createSurvey);
+router.post(
+  "/webhooks",
+  checkCredits,
+  apiLimiter,
+  surveyController.webhookFeedbackSurvey
+);
 
 module.exports = router;

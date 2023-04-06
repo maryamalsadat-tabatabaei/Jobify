@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from "styled-components";
 
 const Wrapper = styled.section`
   border-radius: var(--borderRadius);
@@ -6,9 +6,7 @@ const Wrapper = styled.section`
   background: var(--white);
   padding: 3rem 2rem 4rem;
   box-shadow: var(--shadow-2);
-  h3 {
-    margin-top: 0;
-  }
+
   .form {
     margin: 0;
     border-radius: 0;
@@ -17,6 +15,7 @@ const Wrapper = styled.section`
     max-width: 100%;
     width: 100%;
   }
+
   .form-row {
     margin-bottom: 0;
   }
@@ -45,6 +44,24 @@ const Wrapper = styled.section`
   .clear-btn:hover {
     background: var(--black);
   }
+
+  .form-header {
+    margin-top: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .form-header .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0 0.5rem;
+    font-size: 1.4rem;
+    cursor: pointer;
+    box-shadow: var(--shadow-2);
+  }
+
   @media (min-width: 992px) {
     .form-center {
       grid-template-columns: 1fr 1fr;
@@ -63,6 +80,6 @@ const Wrapper = styled.section`
       margin-top: 0;
     }
   }
-`
+`;
 
-export default Wrapper
+export default Wrapper;

@@ -3,6 +3,7 @@ const HttpError = require("../model/http-error");
 const StatusCodes = require("http-status-codes");
 const checkPermissions = require("../middleware/check-permissions");
 const mongoose = require("mongoose");
+const { ObjectId } = mongoose.Types;
 
 exports.createJob = async (req, res, next) => {
   const { position, company } = req.body;
@@ -46,8 +47,6 @@ exports.getAllJobs = async (req, res, next) => {
     position: { $regex: position || "", $options: "i" },
     company: { $regex: company || "", $options: "i" },
   };
-
-  console.log("queryObject", queryObject);
 
   //no  wait for chaining conditions
   let result = Job.find(queryObject);
@@ -147,9 +146,9 @@ exports.showStatus = async (req, res, next) => {
 
   const showStatus = await Job.aggregate([
     {
-      $match: { createdBy: mongoose.Types.ObjectId(userId) },
+      $match: { createdBy: new ObjectId(userId) },
     },
-    { $group: { _id: $status, count: { $sum: 1 } } },
+    { $group: { _id: "$status", count: { $sum: 1 } } },
   ]);
 
   const defaultStatus = showStatus.reduce((acc, curr) => {
@@ -159,7 +158,7 @@ exports.showStatus = async (req, res, next) => {
   }, {});
 
   let monthlyStatus = await Job.aggregate([
-    { $match: { createdBy: mongoose.Types.ObjectId(userId) } },
+    { $match: { createdBy: new ObjectId(userId) } },
     {
       $group: {
         _id: {
@@ -180,6 +179,5 @@ exports.showStatus = async (req, res, next) => {
     } = item;
     return { year, month, count };
   });
-
   res.status(StatusCodes.OK).json({ defaultStatus, monthlyStatus });
 };

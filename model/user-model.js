@@ -46,6 +46,7 @@ const UserSchema = new mongoose.Schema({
     trim: true,
     default: "my city",
   },
+  credits: { type: Number, default: 0 },
 });
 
 UserSchema.pre("save", async function (next) {

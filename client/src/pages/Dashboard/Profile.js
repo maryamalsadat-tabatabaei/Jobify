@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { FormRow, Alert } from "../../components";
+import { FaCreditCard } from "react-icons/fa";
+import { FormRow, Alert, Payment } from "../../components";
 import { useAppContext } from "../../context/appContext";
 import Wrapper from "../../assets/wrappers/DashboardFormPage";
 
@@ -22,7 +23,10 @@ const Profile = () => {
   return (
     <Wrapper>
       <form className="form" onSubmit={handleSubmit}>
-        <h3>profile </h3>
+        <div className="form-header">
+          <h3>profile </h3>
+          <Payment />
+        </div>
         {showAlert && <Alert />}
 
         <div className="form-center">

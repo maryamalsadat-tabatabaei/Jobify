@@ -16,6 +16,8 @@ import BarChart from "./BarChart";
 import ChartsContainer from "./ChartsContainer";
 import StatsContainer from "./StatsContainer";
 import StatItem from "./StatItem";
+import Payment from "./Payment";
+import EmailForm from "./EmailForm";
 
 export {
   Logo,
@@ -35,4 +37,6 @@ export {
   ChartsContainer,
   BarChart,
   AreaChart,
+  Payment,
+  EmailForm,
 };

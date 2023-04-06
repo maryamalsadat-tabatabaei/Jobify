@@ -18,6 +18,7 @@ const JobsContainer = () => {
     searchJobType,
     sort,
   } = useAppContext();
+  console.log("numberofpages", numOfPages, page, totalJobs);
   useEffect(() => {
     getJobs();
   }, [searchCompany, searchPosition, searchStatus, searchJobType, sort, page]);
@@ -42,7 +43,7 @@ const JobsContainer = () => {
           return <Job key={job._id} {...job} />;
         })}
       </div>
-      {numOfPages && <PageBtnContainer />}
+      {totalJobs > 1 && <PageBtnContainer />}
     </Wrapper>
   );
 };

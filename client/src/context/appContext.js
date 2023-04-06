@@ -1,4 +1,4 @@
-import React, { useContext, useReducer } from "react";
+import React, { useContext, useReducer, useCallback } from "react";
 import reducer from "./reducer";
 import * as actions from "./actions";
 import axios from "axios";
@@ -25,20 +25,24 @@ const initialState = {
   company: "",
   jobTypeOptions: ["full-time", "part-time", "remote", "internship"],
   jobType: "full-time",
-  statusOptions: ["pending", "interview", "declined"],
-  status: "pending",
+  jobStatusOptions: ["pending", "interview", "declined"],
+  jobStatus: "pending",
   jobs: [],
   totalJobs: 0,
   numOfPages: 1,
   page: 1,
-  status: {},
-  monthlyStataus: [],
+  stats: {},
+  monthlyStats: [],
   searchPosition: "",
   searchCompany: "",
   searchStatus: "all",
   searchJobType: "all",
   sort: "latest",
   sortOptions: ["latest", "oldest", "a-z", "z-a"],
+  title: "",
+  subject: "",
+  body: "",
+  recipients: [],
 };
 
 const AppProvider = ({ children }) => {
@@ -159,14 +163,14 @@ const AppProvider = ({ children }) => {
   };
   const createJob = async () => {
     dispatch({ type: actions.CREATE_JOB_PENDING });
-    const { company, jobLocation, jobType, position, status } = state;
+    const { company, jobLocation, jobType, position, jobStatus } = state;
     try {
       await authRequest.post("/jobs", {
         company,
         jobLocation,
         jobType,
         position,
-        status,
+        status: jobStatus,
       });
       dispatch({ type: actions.CREATE_JOB_SUCCESS });
       dispatch({ type: actions.CLEAR_VALUES });
@@ -179,6 +183,7 @@ const AppProvider = ({ children }) => {
     }
     clearAlert();
   };
+
   const getJobs = async () => {
     const {
       searchCompany,
@@ -198,10 +203,10 @@ const AppProvider = ({ children }) => {
     dispatch({ type: actions.GET_JOBS_PENDING });
     try {
       const { data } = await authRequest(url);
-      const { jobs, totalJobs, numOfPages } = data;
+      const { jobs, totalJobs, numberOfPages } = data;
       dispatch({
         type: actions.GET_JOBS_SUCCESS,
-        payload: { jobs, totalJobs, numOfPages },
+        payload: { jobs, totalJobs, numberOfPages },
       });
     } catch (error) {
       if (error.status === 401) return;
@@ -212,19 +217,20 @@ const AppProvider = ({ children }) => {
     }
     clearAlert();
   };
+
   const setEditJob = (id) => {
     dispatch({ type: actions.SET_EDIT_JOB, payload: { id } });
   };
   const editJob = async () => {
     dispatch({ type: actions.EDIT_JOB_PENDING });
-    const { position, company, jobLocation, jobType, status } = state;
+    const { position, company, jobLocation, jobType, jobStatus } = state;
     try {
       await authRequest.patch(`/jobs/${state.editJobId}`, {
         company,
         position,
         jobLocation,
         jobType,
-        status,
+        status: jobStatus,
       });
 
       dispatch({
@@ -246,21 +252,25 @@ const AppProvider = ({ children }) => {
     try {
       await authRequest.delete(`/jobs/${id}`);
       getJobs();
-    } catch (error) {}
+    } catch (error) {
+      console.log(error.message);
+    }
   };
+
   const showStatus = async () => {
     dispatch({ type: actions.SHOW_STATS_PENDING });
     try {
-      const { data } = await authRequest("/jobs/stats");
+      const { data } = await authRequest("/jobs/status");
+
       dispatch({
         type: actions.SHOW_STATS_SUCCESS,
         payload: {
           stats: data.defaultStatus,
-          monthlyStatus: data.monthlyStatus,
+          monthlyStats: data.monthlyStatus,
         },
       });
     } catch (error) {
-      console.log(error.response);
+      console.log(error.message);
       // logoutUser()
     }
 
@@ -273,6 +283,49 @@ const AppProvider = ({ children }) => {
 
   const changePage = (page) => {
     dispatch({ type: actions.CHANGE_PAGE, payload: { page } });
+  };
+
+  const handleStripeToken = async (stripeToken) => {
+    dispatch({ type: actions.PAYMENT_PENDING });
+    try {
+      const { data } = await authRequest.post("/stripe/charge", stripeToken);
+      dispatch({
+        type: actions.SHOW_STATS_SUCCESS,
+        payload: {
+          user: data.user,
+        },
+      });
+    } catch (error) {
+      console.log(error.message);
+      // logoutUser()
+    }
+
+    clearAlert();
+  };
+
+  const clearEmailValues = () => {
+    dispatch({ type: actions.CLEAR_EMAIL_VALUES });
+  };
+  const sendEmail = async () => {
+    dispatch({ type: actions.SEND_EMAIL_PENDING });
+    const { title, subject, body, recipients } = state;
+    try {
+      await authRequest.post("/surveys", {
+        title,
+        subject,
+        body,
+        recipients,
+      });
+      dispatch({ type: actions.SEND_EMAIL_SUCCESS });
+      dispatch({ type: actions.CLEAR_EMAIL_VALUES });
+    } catch (error) {
+      if (error.status === 401) return;
+      dispatch({
+        type: actions.SEND_EMAIL_ERROR,
+        payload: { msg: error.msg },
+      });
+    }
+    clearAlert();
   };
   return (
     <AppContext.Provider
@@ -293,6 +346,9 @@ const AppProvider = ({ children }) => {
         showStatus,
         clearFilters,
         changePage,
+        handleStripeToken,
+        clearEmailValues,
+        sendEmail,
       }}
     >
       {children}

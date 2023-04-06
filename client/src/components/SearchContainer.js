@@ -3,7 +3,7 @@ import { FormRow, FormRowSelect } from ".";
 import { useAppContext } from "../context/appContext";
 import Wrapper from "../assets/wrappers/SearchContainer";
 const SearchContainer = () => {
-  const [localSearch, setLocalSearch] = useState("");
+  // const [localSearch, setLocalSearch] = useState("");
   const {
     isLoading,
     searchCompany,
@@ -12,7 +12,7 @@ const SearchContainer = () => {
     searchJobType,
     sort,
     sortOptions,
-    statusOptions,
+    jobStatusOptions,
     jobTypeOptions,
     handleChange,
     clearFilters,
@@ -22,24 +22,23 @@ const SearchContainer = () => {
     handleChange({ name: e.target.name, value: e.target.value });
   };
 
-  const debounce = () => {
-    let timeoutID;
-    return (e) => {
-      setLocalSearch(e.target.value);
-      clearTimeout(timeoutID);
-      timeoutID = setTimeout(() => {
-        handleChange({ name: e.target.name, value: e.target.value });
-      }, 1000);
-    };
-  };
+  // const debounce = () => {
+  //   let timeoutID;
+  //   return (e) => {
+  //     setLocalSearch(e.target.value);
+  //     clearTimeout(timeoutID);
+  //     timeoutID = setTimeout(() => {
+  //       handleChange({ name: e.target.name, value: e.target.value });
+  //     }, 1000);
+  //   };
+  // };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setLocalSearch("");
     clearFilters();
   };
 
-  const optimizedDebounce = useMemo(() => debounce(), []);
+  // const optimizedDebounce = useMemo(() => debounce(), []);
   return (
     <Wrapper>
       <form className="form">
@@ -50,22 +49,22 @@ const SearchContainer = () => {
             type="text"
             labelText="position"
             name="searchPosition"
-            value={localSearch}
-            handleChange={optimizedDebounce}
+            value={searchPosition}
+            handleChange={handleSearch}
           />
           <FormRow
             type="text"
             labelText="company"
             name="searchCompany"
-            value={localSearch}
-            handleChange={optimizedDebounce}
+            value={searchCompany}
+            handleChange={handleSearch}
           />
           <FormRowSelect
             labelText="job status"
             name="searchStatus"
             value={searchStatus}
             handleChange={handleSearch}
-            list={["all", ...statusOptions]}
+            list={["all", ...jobStatusOptions]}
           />
           <FormRowSelect
             labelText="job type"
@@ -73,6 +72,12 @@ const SearchContainer = () => {
             value={searchJobType}
             handleChange={handleSearch}
             list={["all", ...jobTypeOptions]}
+          />
+          <FormRowSelect
+            name="sort"
+            value={sort}
+            handleChange={handleSearch}
+            list={sortOptions}
           />
           <button
             className="btn btn-block btn-danger"

@@ -7,7 +7,8 @@ import ProtectedRoute from "./ProtectedRoute";
 import AddJob from "./Dashboard/AddJob";
 import AllJobs from "./Dashboard/AllJobs";
 import Profile from "./Dashboard/Profile";
-import ShowStatus from "./Dashboard/ShowStatus";
+import ShowStatusComponent from "./Dashboard/ShowStatusComponent";
+import EmailComponent from "./EmailComponent";
 
 export {
   Landing,
@@ -16,7 +17,8 @@ export {
   AddJob,
   AllJobs,
   Profile,
-  ShowStatus,
+  ShowStatusComponent,
   SharedLayout,
   ProtectedRoute,
+  EmailComponent,
 };

@@ -1,6 +1,5 @@
 const express = require("express");
-const authController = require("../controller/auth-controller");
-const authenticateUser = require("../middleware/auth");
+const billingController = require("../controller/billing-controller");
 const router = express.Router();
 const rateLimiter = require("express-rate-limit");
 
@@ -10,8 +9,6 @@ const apiLimiter = rateLimiter({
   message: "Too many requests from this IP, please try again after 15 minutes",
 });
 
-router.post("/register", apiLimiter, authController.register);
-router.post("/login", apiLimiter, authController.login);
-router.patch("/updateUser", authenticateUser, authController.updateUser);
+router.post("/charge", apiLimiter, billingController.chargeUser);
 
 module.exports = router;

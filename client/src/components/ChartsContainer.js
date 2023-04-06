@@ -6,7 +6,7 @@ import { useAppContext } from "../context/appContext";
 import Wrapper from "../assets/wrappers/ChartsContainer";
 
 const ChartsContainer = () => {
-  const { monthlyStataus: data } = useAppContext();
+  const { monthlyStats: data } = useAppContext();
   const [barChart, setBarChart] = useState(true);
   return (
     <Wrapper>

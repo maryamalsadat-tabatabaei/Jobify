@@ -102,7 +102,7 @@ const reducer = (state, action) => {
         company: "",
         jobLocation: state.userLocation || "",
         jobType: "full-time",
-        status: "pending",
+        jobStatus: "pending",
       };
       return { ...state, ...initialjobState };
     }
@@ -136,7 +136,7 @@ const reducer = (state, action) => {
         isLoading: false,
         jobs: action.payload.jobs,
         totalJobs: action.payload.totalJobs,
-        numOfPages: action.payload.numOfPages,
+        numOfPages: action.payload.numberOfPages,
       };
     }
     case actions.GET_JOBS_ERROR: {
@@ -159,7 +159,7 @@ const reducer = (state, action) => {
         company,
         jobLocation,
         jobType,
-        status,
+        jobStatus: status,
       };
     }
     case actions.DELETE_JOB_PENDING: {
@@ -196,8 +196,9 @@ const reducer = (state, action) => {
     case actions.SHOW_STATS_SUCCESS: {
       return {
         ...state,
-        status: action.payload.stats,
-        monthlyStataus: action.payload.monthlyStatus,
+        isLoading: false,
+        stats: action.payload.stats,
+        monthlyStats: action.payload.monthlyStats,
       };
     }
     case actions.CLEAR_FILTERS: {
@@ -215,6 +216,50 @@ const reducer = (state, action) => {
       return {
         ...state,
         page: action.payload.page,
+      };
+    }
+    case actions.PAYMENT_PENDING: {
+      return {
+        ...state,
+        isLoading: true,
+        showAlert: false,
+      };
+    }
+    case actions.PAYMENT_SUCCESS: {
+      return {
+        ...state,
+        isLoading: false,
+        user: action.payload.user,
+      };
+    }
+    case actions.SEND_EMAIL_PENDING: {
+      return { ...state, isLoading: true };
+    }
+    case actions.SEND_EMAIL_SUCCESS: {
+      return {
+        ...state,
+        isLoading: false,
+        showAlert: true,
+        alertType: "success",
+        alertText: "Email Sent!",
+      };
+    }
+    case actions.SEND_EMAIL_ERROR: {
+      return {
+        ...state,
+        isLoading: false,
+        showAlert: true,
+        alertType: "danger",
+        alertText: action.payload.msg,
+      };
+    }
+    case actions.CLEAR_EMAIL_VALUES: {
+      return {
+        ...state,
+        title: "",
+        subject: "",
+        body: "",
+        recipients: [],
       };
     }
     default:

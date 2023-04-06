@@ -1,6 +1,6 @@
 const express = require("express");
-// require("./populate");
 const path = require("path");
+const bodyParser = require("body-parser");
 const notFoundMiddleware = require("./middleware/not-found");
 const errorHandlerMiddleware = require("./middleware/error-handler");
 require("dotenv").config();
@@ -9,12 +9,15 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/auth-routes");
 const jobRoutes = require("./routes/job-routes");
+const surveyRoutes = require("./routes/survey-routes");
+const billingRoutes = require("./routes/billing-routes");
 const authenticateUser = require("./middleware/auth");
-import helmet from "helmet";
-import xss from "xss-clean";
-import mongoSanitize from "express-mongo-sanitize";
+const helmet = require("helmet");
+const xss = require("xss-clean");
+const mongoSanitize = require("express-mongo-sanitize");
 
 const app = express();
+app.use(bodyParser.json());
 app.use(
   cors({
     origin: ["http://localhost:3000"],
@@ -25,7 +28,7 @@ app.use(
 if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
 }
-app.use(express.static(path.resolve(__dirname, "./client/build")));
+// app.use(express.static(path.resolve(__dirname, "./client/build")));
 app.use(express.json());
 app.use(helmet());
 app.use(xss());
@@ -42,10 +45,12 @@ app.use((req, res, next) => {
 });
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/jobs", authenticateUser, jobRoutes);
+app.use("/api/v1/surveys", authenticateUser, surveyRoutes);
+app.use("/api/v1/stripe", authenticateUser, billingRoutes);
 // only when ready to deploy
-app.get("*", function (request, response) {
-  response.sendFile(path.resolve(__dirname, "./client/build", "index.html"));
-});
+// app.get("*", function (request, response) {
+//   response.sendFile(path.resolve(__dirname, "./client/build", "index.html"));
+// });
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 

@@ -13,13 +13,14 @@ const App = () => {
             </pages.ProtectedRoute>
           }
         >
-          <Route index element={<pages.ShowStatus />} />{" "}
+          <Route index element={<pages.ShowStatusComponent />} />{" "}
           <Route path="add-job" element={<pages.AddJob />} />{" "}
           <Route path="all-jobs" element={<pages.AllJobs />} />{" "}
           <Route path="profile" element={<pages.Profile />} />
         </Route>
         <Route path="/landing" element={<pages.Landing />} />
         <Route path="/register" element={<pages.Register />} />
+        <Route path="send-email" element={<pages.EmailComponent />} />
 
         <Route path="*" element={<pages.Error />} />
       </Routes>
