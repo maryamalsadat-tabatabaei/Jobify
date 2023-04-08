@@ -18,6 +18,7 @@ import StatsContainer from "./StatsContainer";
 import StatItem from "./StatItem";
 import Payment from "./Payment";
 import EmailForm from "./EmailForm";
+import FileUpload from "./FileUpload";
 
 export {
   Logo,
@@ -39,4 +40,5 @@ export {
   AreaChart,
   Payment,
   EmailForm,
+  FileUpload,
 };

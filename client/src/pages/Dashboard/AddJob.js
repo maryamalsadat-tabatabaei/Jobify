@@ -3,6 +3,7 @@ import {
   Alert,
   FormRowSelect,
   EmailComponent,
+  FileUpload,
 } from "../../components";
 import { Link } from "react-router-dom";
 import { useAppContext } from "../../context/appContext";
@@ -17,6 +18,7 @@ const AddJob = () => {
     company,
     jobLocation,
     jobType,
+    jobImageUrl: imageUrl,
     jobTypeOptions,
     jobStatus,
     jobStatusOptions,
@@ -42,7 +44,7 @@ const AddJob = () => {
 
   const handleJobInput = (e) => {
     const name = e.target.name;
-    const value = e.target.value;
+    const value = !e.target.files ? e.target.value : e.target.files[0];
     handleChange({ name, value });
   };
 
@@ -92,7 +94,14 @@ const AddJob = () => {
             handleChange={handleJobInput}
             list={jobTypeOptions}
           />
-
+          {/* <FileUpload
+            type="file"
+            labelText="image"
+            name="imageUrl"
+            value={imageUrl}
+            accept="image/*"
+            handleChange={handleJobInput}
+          /> */}
           <div className="btn-container">
             <button
               className="btn btn-block submit-btn"

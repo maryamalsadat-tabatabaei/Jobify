@@ -66,6 +66,20 @@ const Wrapper = styled.nav`
     display: none;
     margin: 0;
   }
+  .img-wrapper {
+    background-color: transplant;
+    display: flex;
+    border-radius: 60px;
+    box-shadow: 0 0 2px #888;
+    width: 1.5rem;
+    height: 1.5rem;
+    img {
+      border-radius: 60px;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
   @media (min-width: 768px) {
     position: sticky;
     top: 0;

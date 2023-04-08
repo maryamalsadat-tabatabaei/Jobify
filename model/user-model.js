@@ -47,6 +47,7 @@ const UserSchema = new mongoose.Schema({
     default: "my city",
   },
   credits: { type: Number, default: 0 },
+  imageUrl: String,
 });
 
 UserSchema.pre("save", async function (next) {

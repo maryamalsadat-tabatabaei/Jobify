@@ -11,6 +11,7 @@ const authRoutes = require("./routes/auth-routes");
 const jobRoutes = require("./routes/job-routes");
 const surveyRoutes = require("./routes/survey-routes");
 const billingRoutes = require("./routes/billing-routes");
+const uploadigRoutes = require("./routes//upload-routes");
 const authenticateUser = require("./middleware/auth");
 const helmet = require("helmet");
 const xss = require("xss-clean");
@@ -28,6 +29,8 @@ app.use(
 if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
 }
+
+app.use("/upload/images", express.static(path.join("upload", "images")));
 // app.use(express.static(path.resolve(__dirname, "./client/build")));
 app.use(express.json());
 app.use(helmet());
@@ -47,6 +50,8 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/jobs", authenticateUser, jobRoutes);
 app.use("/api/v1/surveys", authenticateUser, surveyRoutes);
 app.use("/api/v1/stripe", authenticateUser, billingRoutes);
+// app.use("/api/v1/upload", authenticateUser, uploadigRoutes);
+
 // only when ready to deploy
 // app.get("*", function (request, response) {
 //   response.sendFile(path.resolve(__dirname, "./client/build", "index.html"));

@@ -7,6 +7,7 @@ const JobSchema = new mongoose.Schema(
       required: [true, "Please provide company name"],
       maxlength: 50,
     },
+    imageUrl: String,
     position: {
       type: String,
       required: [true, "Please provide position"],

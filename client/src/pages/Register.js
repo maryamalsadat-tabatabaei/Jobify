@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Logo, FormRow, Alert } from "../components";
+import { Logo, FormRow, Alert, FileUpload } from "../components";
 import Wrapper from "../assets/wrappers/RegisterPage";
 import { useAppContext } from "../context/appContext";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +12,7 @@ const Register = () => {
     name: "",
     email: "",
     password: "",
+    imageUrl: "",
     isMember: false,
   };
   const [values, setvalues] = useState(initialState);
@@ -22,16 +23,19 @@ const Register = () => {
   }, [user, navigate]);
 
   const handleChange = (e) => {
-    setvalues({ ...values, [e.target.name]: e.target.value });
+    const { target } = e;
+    !target.files
+      ? setvalues({ ...values, [e.target.name]: target.value })
+      : setvalues({ ...values, [e.target.name]: target.files[0] });
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    const { name, email, password, isMember } = values;
+    const { name, email, password, isMember, imageUrl } = values;
     if (!email || !password || (!isMember && !name)) {
       displayAlert();
       return;
     }
-    const currentUser = { name, email, password };
+    const currentUser = { email, password };
     if (isMember) {
       authenticateUser({
         currentUser,
@@ -39,8 +43,16 @@ const Register = () => {
         alertText: "Login Successful! Redirecting...",
       });
     } else {
+      const formData = new FormData();
+      for (const [key, value] of Object.entries({
+        ...currentUser,
+        name,
+        imageUrl,
+      })) {
+        formData.append(key, value);
+      }
       authenticateUser({
-        currentUser,
+        currentUser: formData,
         endPoint: "register",
         alertText: "User Created! Redirecting...",
       });
@@ -65,6 +77,7 @@ const Register = () => {
             handleChange={handleChange}
           />
         )}
+
         <FormRow
           type="text"
           name="email"
@@ -77,6 +90,16 @@ const Register = () => {
           value={values.password}
           handleChange={handleChange}
         />
+        {!values.isMember && (
+          <FileUpload
+            type="file"
+            labelText="image"
+            name="imageUrl"
+            value={values.imageUrl}
+            accept="image/*"
+            handleChange={handleChange}
+          />
+        )}
         <button type="submit" className="btn btn-block" disabled={isLoading}>
           submit
         </button>

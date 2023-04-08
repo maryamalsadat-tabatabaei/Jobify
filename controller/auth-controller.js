@@ -16,8 +16,14 @@ exports.register = async (req, res, next) => {
     const error = new HttpError("User already exists", StatusCodes.BAD_REQUEST);
     return next(error);
   }
+
   try {
-    const user = await User.create({ email, name, password });
+    const user = await User.create({
+      email,
+      name,
+      password,
+      imageUrl: req.file ? req.file.path : null,
+    });
     const token = user.generateJWT();
     res.status(StatusCodes.CREATED).json({ user, token });
   } catch (error) {
@@ -53,7 +59,6 @@ exports.login = async (req, res, next) => {
   res.status(StatusCodes.OK).json({ user, token });
 };
 exports.updateUser = async (req, res, next) => {
-  console.log("req.qqqqqq", req);
   const { lastName, location, name } = req.body;
 
   if (!lastName || !location) {
@@ -75,6 +80,8 @@ exports.updateUser = async (req, res, next) => {
   user.location = location;
   user.lastName = lastName;
   user.name = name;
+
+  user.imageUrl = req.file ? req.file.path : user.imageUrl;
   try {
     await user.save();
     // various setups

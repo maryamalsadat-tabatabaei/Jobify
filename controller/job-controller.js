@@ -3,6 +3,7 @@ const HttpError = require("../model/http-error");
 const StatusCodes = require("http-status-codes");
 const checkPermissions = require("../middleware/check-permissions");
 const mongoose = require("mongoose");
+const moment = require("moment");
 const { ObjectId } = mongoose.Types;
 
 exports.createJob = async (req, res, next) => {
@@ -177,7 +178,11 @@ exports.showStatus = async (req, res, next) => {
       _id: { year, month },
       count,
     } = item;
-    return { year, month, count };
+    const date = moment()
+      .month(month - 1)
+      .year(year)
+      .format("MMM Y");
+    return { date, count };
   });
   res.status(StatusCodes.OK).json({ defaultStatus, monthlyStatus });
 };

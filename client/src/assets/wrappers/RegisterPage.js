@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from "styled-components";
 
 const Wrapper = styled.section`
   display: grid;
@@ -31,5 +31,33 @@ const Wrapper = styled.section`
     cursor: pointer;
     letter-spacing: var(--letterSpacing);
   }
-`
-export default Wrapper
+
+  .image-upload.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    .btn {
+      align-self: center;
+      background-color: var(--grey-700);
+    }
+  }
+
+  .image-upload__preview {
+    width: 13rem;
+    height: 13rem;
+    border: 1px solid var(--primary-500);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .image-upload__preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+`;
+export default Wrapper;

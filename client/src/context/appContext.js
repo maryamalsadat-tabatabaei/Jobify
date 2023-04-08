@@ -18,6 +18,7 @@ const initialState = {
   token: token || null,
   userLocation: userLocation || "",
   jobLocation: "",
+  jobImageUrl: "",
   showSidebar: true,
   isEditing: false,
   editJobId: "",
@@ -133,10 +134,16 @@ const AppProvider = ({ children }) => {
     dispatch({ type: actions.LOGOUT_USER });
     removeUserFromLocalStorage();
   };
+
   const updateUser = async (userData) => {
     dispatch({ type: actions.UPDATE_USER_PENDING });
     try {
-      const response = authRequest.patch("/auth/updateUser", userData);
+      const formData = new FormData();
+      for (const [key, value] of Object.entries(userData)) {
+        formData.append(key, value);
+      }
+
+      const response = authRequest.patch("/auth/updateUser", formData);
       const { user, token, location } = response.data;
       dispatch({
         type: actions.UPDATE_USER_SUCCED,
@@ -163,14 +170,23 @@ const AppProvider = ({ children }) => {
   };
   const createJob = async () => {
     dispatch({ type: actions.CREATE_JOB_PENDING });
-    const { company, jobLocation, jobType, position, jobStatus } = state;
+    const { company, jobLocation, jobType, position, jobStatus, jobImageUrl } =
+      state;
+
     try {
+      // const uploadConfig = await authRequest("/upload");
+      // await axios.put(uploadConfig.data.url, jobImageUrl, {
+      //   headers: {
+      //     "Content-Type": jobImageUrl.type,
+      //   },
+      // });
       await authRequest.post("/jobs", {
         company,
         jobLocation,
         jobType,
         position,
         status: jobStatus,
+        // imageUrl: uploadConfig.data.key,
       });
       dispatch({ type: actions.CREATE_JOB_SUCCESS });
       dispatch({ type: actions.CLEAR_VALUES });
@@ -223,14 +239,22 @@ const AppProvider = ({ children }) => {
   };
   const editJob = async () => {
     dispatch({ type: actions.EDIT_JOB_PENDING });
-    const { position, company, jobLocation, jobType, jobStatus } = state;
+    const { position, company, jobLocation, jobType, jobStatus, jobImageUrl } =
+      state;
     try {
+      // const uploadConfig = await authRequest("/upload");
+      // await axios.put(uploadConfig.data.url, jobImageUrl, {
+      //   headers: {
+      //     "Content-Type": jobImageUrl.type,
+      //   },
+      // });
       await authRequest.patch(`/jobs/${state.editJobId}`, {
         company,
         position,
         jobLocation,
         jobType,
         status: jobStatus,
+        // imageUrl: uploadConfig.data.key,
       });
 
       dispatch({
