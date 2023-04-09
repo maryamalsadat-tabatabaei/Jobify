@@ -1,19 +1,27 @@
 import { useState, useEffect } from "react";
+import { FcGoogle } from "react-icons/fc";
+import { useGoogleLogin } from "@react-oauth/google";
 import { Logo, FormRow, Alert, FileUpload } from "../components";
 import Wrapper from "../assets/wrappers/RegisterPage";
 import { useAppContext } from "../context/appContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Register = () => {
-  const { showAlert, displayAlert, isLoading, authenticateUser, user } =
-    useAppContext();
+  const {
+    showAlert,
+    displayAlert,
+    isLoading,
+    authenticateUser,
+    user,
+    googleSignIn,
+  } = useAppContext();
   const navigate = useNavigate();
   const initialState = {
     name: "",
     email: "",
     password: "",
     imageUrl: "",
-    isMember: false,
+    isMember: true,
   };
   const [values, setvalues] = useState(initialState);
   useEffect(() => {
@@ -62,7 +70,16 @@ const Register = () => {
   const handleToggleMember = () => {
     setvalues({ ...values, isMember: !values.isMember });
   };
-
+  const handleGoogleAuth = useGoogleLogin({
+    onSuccess: (tokenResponse) => {
+      console.log(tokenResponse);
+      googleSignIn(tokenResponse.userId, tokenResponse.token);
+      navigate("/");
+    },
+    onError: () => {
+      console.log("Login Failed");
+    },
+  });
   return (
     <Wrapper className="full-page">
       <form className="form" onSubmit={handleSubmit}>
@@ -113,6 +130,30 @@ const Register = () => {
             {values.isMember ? "Register" : "Login"}
           </button>
         </p>
+
+        {values.isMember && (
+          <p>
+            Forgot your password?
+            <button className="member-btn">
+              <Link to="/reset-password">Reset Password</Link>
+            </button>
+          </p>
+        )}
+        {values.isMember && (
+          <>
+            <p className="text">Or</p>
+            <div className="authentication__action">
+              <button
+                className="google_btn btn"
+                type="button"
+                onClick={handleGoogleAuth}
+              >
+                <FcGoogle />
+                <span>Sing in with Google</span>
+              </button>
+            </div>
+          </>
+        )}
       </form>
     </Wrapper>
   );

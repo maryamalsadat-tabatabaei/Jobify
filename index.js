@@ -4,18 +4,21 @@ const bodyParser = require("body-parser");
 const notFoundMiddleware = require("./middleware/not-found");
 const errorHandlerMiddleware = require("./middleware/error-handler");
 require("dotenv").config();
+const jobRoutes = require("./routes/job-routes");
+const userRoutes = require("./routes/user-routes");
+const surveyRoutes = require("./routes/survey-routes");
+const billingRoutes = require("./routes/billing-routes");
+const uploadigRoutes = require("./routes/upload-routes");
+const authenticateUser = require("./middleware/auth");
+const localAuthRoutes = require("./routes/auth-routes/local-auth");
+const googleAuthRoutes = require("./routes/auth-routes/google-auth");
 const morgan = require("morgan");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const authRoutes = require("./routes/auth-routes");
-const jobRoutes = require("./routes/job-routes");
-const surveyRoutes = require("./routes/survey-routes");
-const billingRoutes = require("./routes/billing-routes");
-const uploadigRoutes = require("./routes//upload-routes");
-const authenticateUser = require("./middleware/auth");
 const helmet = require("helmet");
 const xss = require("xss-clean");
 const mongoSanitize = require("express-mongo-sanitize");
+const passport = require("passport");
 
 const app = express();
 app.use(bodyParser.json());
@@ -46,8 +49,17 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Methods", "POST,GET,DELETE,PATCH");
   next();
 });
-app.use("/api/v1/auth", authRoutes);
+
+app.use(passport.initialize());
+
+require("./service/jwt-strategy");
+require("./service/google-strategy");
+require("./service/local-strategy");
+
+app.use("/api/v1/auth", localAuthRoutes);
+app.use("/api/v1/auth/google", googleAuthRoutes);
 app.use("/api/v1/jobs", authenticateUser, jobRoutes);
+app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/surveys", authenticateUser, surveyRoutes);
 app.use("/api/v1/stripe", authenticateUser, billingRoutes);
 // app.use("/api/v1/upload", authenticateUser, uploadigRoutes);

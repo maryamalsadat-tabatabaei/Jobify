@@ -48,6 +48,8 @@ const UserSchema = new mongoose.Schema({
   },
   credits: { type: Number, default: 0 },
   imageUrl: String,
+  resetToken: String,
+  resetTokenExpiration: Date,
 });
 
 UserSchema.pre("save", async function (next) {

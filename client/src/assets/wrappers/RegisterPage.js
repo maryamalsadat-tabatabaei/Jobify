@@ -59,5 +59,42 @@ const Wrapper = styled.section`
     height: 100%;
     object-fit: cover;
   }
+
+  .authentication__action {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .text {
+    font-size: 14px;
+    color: #2c444e;
+    padding: 0;
+  }
+
+  .google_btn {
+    width: 230px;
+    height: 40px;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    background-color: white;
+    box-shadow: rgb(0 0 0 / 20%) 0px 3px 1px -2px,
+      rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 12%) 0px 1px 5px 0px;
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0 0 20px 0;
+    color: #2c444e;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .google_btn > span {
+    margin-left: 10px;
+  }
 `;
 export default Wrapper;

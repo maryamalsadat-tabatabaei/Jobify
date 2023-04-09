@@ -21,6 +21,8 @@ const App = () => {
         <Route path="/landing" element={<pages.Landing />} />
         <Route path="/register" element={<pages.Register />} />
         <Route path="send-email" element={<pages.EmailComponent />} />
+        <Route path="reset-password" element={<pages.ResetPassword />} />
+        <Route path="reset-password/:token" element={<pages.NewPassword />} />
 
         <Route path="*" element={<pages.Error />} />
       </Routes>

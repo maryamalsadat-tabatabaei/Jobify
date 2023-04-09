@@ -351,6 +351,9 @@ const AppProvider = ({ children }) => {
     }
     clearAlert();
   };
+  const googleSignIn = (userId, token) => {
+    dispatch({ type: actions.GOOGLE_SIGN_IN, payload: { userId, token } });
+  };
   return (
     <AppContext.Provider
       value={{
@@ -373,6 +376,7 @@ const AppProvider = ({ children }) => {
         handleStripeToken,
         clearEmailValues,
         sendEmail,
+        googleSignIn,
       }}
     >
       {children}

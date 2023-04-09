@@ -9,6 +9,8 @@ import AllJobs from "./Dashboard/AllJobs";
 import Profile from "./Dashboard/Profile";
 import ShowStatusComponent from "./Dashboard/ShowStatusComponent";
 import EmailComponent from "./EmailComponent";
+import ResetPassword from "./Reset";
+import NewPassword from "./NewPassword";
 
 export {
   Landing,
@@ -21,4 +23,6 @@ export {
   SharedLayout,
   ProtectedRoute,
   EmailComponent,
+  ResetPassword,
+  NewPassword,
 };

@@ -262,6 +262,13 @@ const reducer = (state, action) => {
         recipients: [],
       };
     }
+    case actions.GOOGLE_SIGN_IN: {
+      return {
+        ...state,
+        token: action.payload.token,
+        user: action.payload.userId,
+      };
+    }
     default:
       throw new Error(`no such action: ${action.type}`);
   }

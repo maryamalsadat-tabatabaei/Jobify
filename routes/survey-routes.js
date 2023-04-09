@@ -10,6 +10,7 @@ const apiLimiter = rateLimiter({
   max: 10,
   message: "Too many requests from this IP, please try again after 15 minutes",
 });
+
 router.get("/:surveyId/:choice", surveyController.getFeedback);
 router.post("/", checkCredits, apiLimiter, surveyController.createSurvey);
 router.post(
