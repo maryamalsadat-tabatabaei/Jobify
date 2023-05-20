@@ -34,7 +34,7 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 app.use("/upload/images", express.static(path.join("upload", "images")));
-// app.use(express.static(path.resolve(__dirname, "./client/build")));
+app.use(express.static(path.resolve(__dirname, "./client/build")));
 app.use(express.json());
 app.use(helmet());
 app.use(xss());
@@ -65,9 +65,9 @@ app.use("/api/v1/stripe", authenticateUser, billingRoutes);
 // app.use("/api/v1/upload", authenticateUser, uploadigRoutes);
 
 // only when ready to deploy
-// app.get("*", function (request, response) {
-//   response.sendFile(path.resolve(__dirname, "./client/build", "index.html"));
-// });
+app.get("*", function (request, response) {
+  response.sendFile(path.resolve(__dirname, "./client/build", "index.html"));
+});
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 

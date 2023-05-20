@@ -99,11 +99,6 @@ const Wrapper = styled.section`
     .btn-container {
       margin-top: 0;
     }
-    .image-upload.center {
-      .btn {
-        margin-bottom: 2rem;
-      }
-    }
   }
   @media (min-width: 1120px) {
     .form-center {
@@ -111,11 +106,6 @@ const Wrapper = styled.section`
     }
     .form-center button {
       margin-top: 0;
-    }
-    .image-upload.center {
-      .btn {
-        margin-bottom: 2rem;
-      }
     }
   }
 `;

@@ -47,6 +47,7 @@ const Profile = () => {
             value={name}
             handleChange={(e) => setName(e.target.value)}
           />
+
           <FormRow
             labelText="last name"
             type="text"
@@ -54,7 +55,6 @@ const Profile = () => {
             value={lastName}
             handleChange={(e) => setLastName(e.target.value)}
           />
-
           <FormRow
             type="text"
             name="location"
