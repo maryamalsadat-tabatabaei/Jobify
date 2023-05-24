@@ -6,29 +6,36 @@ require("dotenv").config;
 router.get(
   "/",
   passport.authenticate("google", {
-    scope: ["email", "profile"],
+    scope: ["profile", "email"],
+    session: false,
   })
 );
-
 router.get(
   "/callback",
-  passport.authenticate("google", {
-    session: false,
-    successRedirect: "/auth/google/callback/success",
-    failureRedirect: "/auth/google/callback/failure",
-  })
+  passport.authenticate("google", { session: false }),
+  (req, res) => {
+    const token = req.user.generateJWT();
+    res.redirect(
+      `http://localhost:3000/register?token=${token}&user=${JSON.stringify(
+        req.user
+      )}`
+    );
+  }
 );
-// Success
-router.get("/callback/success", (req, res) => {
-  console.log("succeeddddddddd", req);
-  const token = req.user.generateJWT();
+
+// Success route
+router.get("/success", (req, res) => {
+  // Redirect to a success page or send the JWT token to the client
+  console.log("req.user", user);
   res.cookie("x-auth-cookie", token);
-  res.redirect("/api/v1/");
+  res.redirect(
+    `http://localhost:3000?token=${token}&user=${JSON.stringify(req.user)}`
+  );
 });
-// failure
-router.get("/callback/failure", (req, res) => {
-  console.log("Log in failure");
-  res.redirect("/api/v1/auth/login");
+
+// Failure route
+router.get("/failure", (req, res) => {
+  res.redirect("/auth/login");
 });
 
 module.exports = router;

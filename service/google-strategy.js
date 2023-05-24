@@ -21,31 +21,24 @@ const googleOptions = {
   callbackURL: "/auth/google/callback",
   clientID: process.env.GOOGLE_OAUTH_CLIENT_ID,
   clientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET,
-  Proxy: true,
-  //   scope: ["profile", "email"],
-  //   passReqToCallback: true,
+  // Proxy: true,
+  scope: ["profile", "email"],
+  passReqToCallback: true,
 };
 const googleLogin = new GoogleStrategy(
   googleOptions,
-  async (req, accessToken, refreshToken, profile, done) => {
-    console.log("===== GOOGLE PROFILE =======");
-    console.log("accessToken", accessToken);
-    console.log("======== END ===========");
-
+  async (req, accessToken, res, refreshToken, profile, done) => {
     const { name, email, image } = extractProfile(profile);
     try {
-      const existingUser = await User.findOne({ email });
+      const existingUser = await User.findOne({ googleId: profile.id });
       if (existingUser) {
-        console.log("existingUser", existingUser);
-
         return done(null, existingUser);
       }
-
       const createdUser = new User({
+        googleId: profile.id,
         name,
         email,
         image,
-        // password: hashedPassword,
         places: [],
       });
 
@@ -58,8 +51,6 @@ const googleLogin = new GoogleStrategy(
         );
         return next(error);
       }
-      console.log("createdUser", createdUser);
-
       done(null, createdUser);
     } catch (err) {
       done(err, null);

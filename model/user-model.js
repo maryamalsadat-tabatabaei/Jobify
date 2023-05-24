@@ -24,15 +24,13 @@ const UserSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: [true, "Please provide password"],
-    minLength: 3,
-    maxLength: 20,
-  },
-  password: {
-    type: String,
-    required: [true, "Please provide password"],
+    // required: [true, "Please provide password"],
     minLength: 6,
-    select: false,
+    maxLength: 20,
+    // select: false,
+  },
+  googleId: {
+    type: String,
   },
   lastName: {
     type: String,
@@ -55,10 +53,17 @@ const UserSchema = new mongoose.Schema({
 UserSchema.pre("save", async function (next) {
   const user = this;
   try {
-    if (!this.isModified("password")) return;
-    const salt = await bcrypt.genSalt(12);
-    const hashedPassword = await bcrypt.hash(user.password, salt);
-    user.password = hashedPassword;
+    if (!user.isModified("password")) return next();
+
+    // Check if the user has a password (local authentication) or not (Google authentication)
+    if (user.password) {
+      // User has a password (local authentication)
+      const salt = await bcrypt.genSalt(12);
+      const hashedPassword = await bcrypt.hash(user.password, salt);
+      user.password = hashedPassword;
+    }
+
+    // Proceed with saving the user
     next();
   } catch (error) {
     return next(error);

@@ -266,7 +266,7 @@ const reducer = (state, action) => {
       return {
         ...state,
         token: action.payload.token,
-        user: action.payload.userId,
+        user: action.payload.user,
       };
     }
     default:

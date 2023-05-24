@@ -21,14 +21,15 @@ const mongoSanitize = require("express-mongo-sanitize");
 const passport = require("passport");
 
 const app = express();
+// Configure CORS options
+const corsOptions = {
+  origin: ["http://localhost:3000", "http://localhost:8000"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+};
 app.use(bodyParser.json());
-app.use(
-  cors({
-    origin: ["http://localhost:3000"],
-    methods: "GET,POST,PUT,DELETE,OPTIONS,PATCH",
-    credentials: true,
-  })
-);
+app.use(cors(corsOptions));
 if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
 }
@@ -46,7 +47,10 @@ app.use((req, res, next) => {
     "Access-Control-Allow-Headers",
     "Origin,X-Requested-With,Content-Type,Accept,Authorization"
   );
-  res.setHeader("Access-Control-Allow-Methods", "POST,GET,DELETE,PATCH");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "POST,GET,DELETE,PATCH,PUT,OPTIONS"
+  );
   next();
 });
 
@@ -57,7 +61,7 @@ require("./service/google-strategy");
 require("./service/local-strategy");
 
 app.use("/api/v1/auth", localAuthRoutes);
-app.use("/api/v1/auth/google", googleAuthRoutes);
+app.use("/auth/google", googleAuthRoutes);
 app.use("/api/v1/jobs", authenticateUser, jobRoutes);
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/surveys", authenticateUser, surveyRoutes);

@@ -5,7 +5,12 @@ require("dotenv").config;
 
 const auth = (req, res, next) => {
   const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith("Bearer")) {
+  const token = req.query.token || (authHeader && authHeader.split(" ")[1]);
+
+  //   const token = req.query.token || (authHeader && authHeader.split(" ")[1]);
+  //   if (!authHeader || !authHeader.startsWith("Bearer")) {
+
+  if (!token) {
     const error = new HttpError(
       "Authentication Invalid",
       StatusCodes.UNAUTHORIZED
@@ -14,7 +19,6 @@ const auth = (req, res, next) => {
   }
 
   try {
-    const token = authHeader.split(" ")[1];
     const { userId, email } = jwt.verify(token, process.env.JWT_SECRET);
     req.user = { userId, email };
     next();

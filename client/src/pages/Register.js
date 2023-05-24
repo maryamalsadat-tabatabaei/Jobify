@@ -30,6 +30,38 @@ const Register = () => {
     }
   }, [user, navigate]);
 
+  useEffect(() => {
+    const handleGoogleCallback = () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const token = urlParams.get("token");
+      const user = JSON.parse(urlParams.get("user"));
+      googleSignIn(user, token);
+    };
+
+    handleGoogleCallback();
+  }, []);
+
+  useEffect(() => {
+    /*global google*/
+    google.accounts.id.initialize({
+      client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+      callback: handleSignIn,
+      auto_select: true,
+    });
+
+    window.google.accounts.id.renderButton(
+      document.getElementById("google-signin-button"),
+      { theme: "outline", size: "large" }
+    );
+  }, []);
+
+  const handleSignIn = (res) => {
+    const googleIdToken = res.credential;
+    const redirectUrl =
+      "http://localhost:8000/auth/google?googleIdToken=" + googleIdToken;
+    window.location.href = redirectUrl;
+  };
+
   const handleChange = (e) => {
     const { target } = e;
     !target.files
@@ -70,16 +102,7 @@ const Register = () => {
   const handleToggleMember = () => {
     setvalues({ ...values, isMember: !values.isMember });
   };
-  const handleGoogleAuth = useGoogleLogin({
-    onSuccess: (tokenResponse) => {
-      console.log(tokenResponse);
-      googleSignIn(tokenResponse.userId, tokenResponse.token);
-      navigate("/");
-    },
-    onError: () => {
-      console.log("Login Failed");
-    },
-  });
+
   return (
     <Wrapper className="full-page">
       <form className="form" onSubmit={handleSubmit}>
@@ -142,15 +165,19 @@ const Register = () => {
         {values.isMember && (
           <>
             <p className="text">Or</p>
-            <div className="authentication__action">
-              <button
+            <div
+              id="custom-google-signin-button"
+              className="authentication__action"
+            >
+              {/* <button
                 className="google_btn btn"
                 type="button"
-                onClick={handleGoogleAuth}
+                onClick={handleGoogleSignIn}
               >
                 <FcGoogle />
                 <span>Sing in with Google</span>
-              </button>
+              </button> */}
+              <div id="google-signin-button"></div>
             </div>
           </>
         )}

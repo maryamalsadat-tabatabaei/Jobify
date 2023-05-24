@@ -86,10 +86,10 @@ const AppProvider = ({ children }) => {
     }, 3000);
   };
 
-  const addUserToLocalStorage = ({ user, token, location }) => {
+  const addUserToLocalStorage = (user, token, location = null) => {
     localStorage.setItem("user", JSON.stringify(user));
     localStorage.setItem("token", token);
-    localStorage.setItem("location", location);
+    localStorage.setItem("location", location || "");
   };
   const removeUserFromLocalStorage = () => {
     localStorage.removeItem("token");
@@ -98,12 +98,19 @@ const AppProvider = ({ children }) => {
   };
 
   const authenticateUser = async ({ currentUser, endPoint, alertText }) => {
+    console.log(
+      "currentUser, endPoint, alertText ",
+      currentUser,
+      endPoint,
+      alertText
+    );
     dispatch({ type: actions.AUTHENTICATE_USER_PENDING });
     try {
       const response = await axios.post(
         `http://localhost:8000/api/v1/auth/${endPoint}`,
         currentUser
       );
+      console.log("///////////////////", response);
       const { user, token, location } = response.data;
       dispatch({
         type: actions.AUTHENTICATE_USER_SUCCED,
@@ -122,7 +129,7 @@ const AppProvider = ({ children }) => {
     } catch (error) {
       dispatch({
         type: actions.AUTHENTICATE_USER_REJECTED,
-        payload: { msg: error.msg },
+        payload: { msg: error.response.data.msg },
       });
     }
     clearAlert();
@@ -149,14 +156,14 @@ const AppProvider = ({ children }) => {
         type: actions.UPDATE_USER_SUCCED,
         payload: { user, location, token },
       });
-      addUserToLocalStorage({ user, location, token });
+      addUserToLocalStorage({ user, token, location });
       // if no token
       // addUserToLocalStorage({ user, location, token: initialState.token });
     } catch (error) {
       if (error.status !== 401) {
         dispatch({
           type: actions.AUTHENTICATE_USER_REJECTED,
-          payload: { msg: error.msg },
+          payload: { msg: error.response.data.msg },
         });
       }
     }
@@ -194,7 +201,7 @@ const AppProvider = ({ children }) => {
       if (error.status === 401) return;
       dispatch({
         type: actions.CREATE_JOB_ERROR,
-        payload: { msg: error.msg },
+        payload: { msg: error.response.data.msg },
       });
     }
     clearAlert();
@@ -228,7 +235,7 @@ const AppProvider = ({ children }) => {
       if (error.status === 401) return;
       dispatch({
         type: actions.GET_JOBS_ERROR,
-        payload: { msg: error.msg },
+        payload: { msg: error.response.data.msg },
       });
     }
     clearAlert();
@@ -265,7 +272,7 @@ const AppProvider = ({ children }) => {
       if (error.status === 401) return;
       dispatch({
         type: actions.GET_JOBS_ERROR,
-        payload: { msg: error.msg },
+        payload: { msg: error.response.data.msg },
       });
     }
     clearAlert();
@@ -278,6 +285,7 @@ const AppProvider = ({ children }) => {
       getJobs();
     } catch (error) {
       console.log(error.message);
+      // console.log(error.response.data.msg);
     }
   };
 
@@ -295,6 +303,7 @@ const AppProvider = ({ children }) => {
       });
     } catch (error) {
       console.log(error.message);
+      // console.log(error.response.data.msg);
       // logoutUser()
     }
 
@@ -321,6 +330,7 @@ const AppProvider = ({ children }) => {
       });
     } catch (error) {
       console.log(error.message);
+      // console.log(error.response.data.msg);
       // logoutUser()
     }
 
@@ -346,13 +356,14 @@ const AppProvider = ({ children }) => {
       if (error.status === 401) return;
       dispatch({
         type: actions.SEND_EMAIL_ERROR,
-        payload: { msg: error.msg },
+        payload: { msg: error.response.data.msg },
       });
     }
     clearAlert();
   };
-  const googleSignIn = (userId, token) => {
-    dispatch({ type: actions.GOOGLE_SIGN_IN, payload: { userId, token } });
+  const googleSignIn = (user, token) => {
+    dispatch({ type: actions.GOOGLE_SIGN_IN, payload: { user, token } });
+    addUserToLocalStorage(user, token);
   };
   return (
     <AppContext.Provider
@@ -377,6 +388,7 @@ const AppProvider = ({ children }) => {
         clearEmailValues,
         sendEmail,
         googleSignIn,
+        addUserToLocalStorage,
       }}
     >
       {children}
