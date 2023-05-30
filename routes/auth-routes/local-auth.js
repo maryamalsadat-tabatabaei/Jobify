@@ -1,4 +1,4 @@
-const requireLocalAuth = require("../../middleware/local-auth");
+const requireLocalAuth = require("../../middleware/auth");
 const express = require("express");
 const authController = require("../../controller/auth-controller");
 const fileUpload = require("../../service/file-upload");

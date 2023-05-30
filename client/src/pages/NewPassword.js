@@ -17,12 +17,20 @@ const NewPassword = () => {
     const fetchedData = async () => {
       try {
         const responseData = await axios(
-          `http://localhost:8000/api/user/resetPassword/${passwordToken}`
+          `http://localhost:8000/api/v1/user/resetPassword/${passwordToken}`
         );
-        setUserId(responseData.userId);
-      } catch (err) {}
-      fetchedData();
+        console.log(
+          "responseData.userId",
+          responseData.data.userId,
+          responseData.data.token
+        );
+        setUserId(responseData.data.userId);
+      } catch (error) {
+        console.log("Could not identify user, credentials seem to be wrong");
+        navigate("/error", { state: { msg: error.response.data.msg } });
+      }
     };
+    fetchedData();
   }, []);
 
   const handleChange = (e) => {
@@ -36,19 +44,20 @@ const NewPassword = () => {
     }
 
     try {
+      console.log("new-password");
       const responseData = await axios.post(
         "http://localhost:8000/api/v1/user/new-password",
-        password
+        { userId, password, passwordToken }
       );
       setPassword("");
-      navigate("/");
+      // navigate("/register");
     } catch (err) {
       console.log(err);
     }
   };
   return (
     <Wrapper className="full-page">
-      <form className="form">
+      <form className="form" onSubmit={handleSubmit}>
         <Logo />
         <h3> Update Password</h3>
         {showAlert && <Alert />}
@@ -60,12 +69,7 @@ const NewPassword = () => {
           handleChange={handleChange}
         />
 
-        <button
-          type="submit"
-          className="btn btn-block"
-          disabled={isLoading}
-          onSubmit={handleSubmit}
-        >
+        <button type="submit" className="btn btn-block" disabled={isLoading}>
           Update Password
         </button>
       </form>

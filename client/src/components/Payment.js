@@ -12,7 +12,7 @@ const Payment = () => {
       token={(token) => handleStripeToken(token)}
       stripeKey={process.env.REACT_APP_STRIPE_KEY}
     >
-      <button className="btn btn-danger">
+      <button className="btn btn-danger" type="button">
         <FaCreditCard />
         add credits
       </button>

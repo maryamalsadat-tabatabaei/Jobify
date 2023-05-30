@@ -5,7 +5,7 @@ import { useAppContext } from "../context/appContext";
 import { useNavigate } from "react-router-dom";
 
 const ResetPassword = () => {
-  const { showAlert, displayAlert, isLoading } = useAppContext();
+  const { showAlert, displayAlert, isLoading, resetPassword } = useAppContext();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
 
@@ -19,20 +19,11 @@ const ResetPassword = () => {
       return;
     }
 
-    try {
-      fetch("http://localhost:8000/api/v1/user/resetPassword", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-        }),
-      });
-      setEmail("");
-    } catch (err) {
-      console.log(err);
-    }
+    resetPassword(email);
+    setEmail("");
+    setTimeout(() => {
+      navigate("/register");
+    }, 5000);
   };
   return (
     <Wrapper className="full-page">

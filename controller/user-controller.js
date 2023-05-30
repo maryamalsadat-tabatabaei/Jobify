@@ -3,13 +3,12 @@ const HttpError = require("../model/http-error");
 const nodemailer = require("nodemailer");
 const sendgridTransport = require("nodemailer-sendgrid-transport");
 const crypto = require("crypto");
-const StatusCodes = require("http-status-codes");
+require("dotenv").config();
 
 const transporter = nodemailer.createTransport(
   sendgridTransport({
     auth: {
-      api_key:
-        "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",
+      api_key: process.env.SENDGRID_API_KEY,
     },
   })
 );
@@ -32,23 +31,39 @@ exports.resetPassword = async (req, res, next) => {
     return next(error);
   }
 
-  let resetToken;
-  crypto.randomBytes(32, (err, buffer) => {
-    if (err) {
-      const error = new HttpError(
-        "Reset password failed, please try again later.",
-        500
-      );
-      return next(error);
-    }
-    resetToken = buffer.toString("hex");
-  });
-
-  existingUser.resetToken = resetToken;
-  existingUser.resetTokenExpiration = Date.now() + 3600000;
-
   try {
+    const createdResetToken = await new Promise((resolve, reject) => {
+      crypto.randomBytes(32, (err, buffer) => {
+        if (err) {
+          reject(
+            new HttpError("Reset password failed, please try again later.", 500)
+          );
+        }
+        resolve(buffer.toString("hex"));
+      });
+    });
+
+    existingUser.resetPasswordToken = createdResetToken;
+    existingUser.resetPasswordTokenExpiration = Date.now() + 3600000;
+
     await existingUser.save();
+
+    const info = await transporter.sendMail({
+      to: email,
+      from: "maryamtabatabaiii@gmail.com",
+      subject: "Password reset",
+      html: `
+            <p>You requested a password reset</p>
+            <p>Click this <a href="http://localhost:3000/reset-password/${createdResetToken}">link</a> to set a new password.</p>
+          `,
+    });
+
+    console.log("Email sent successfully");
+    console.log(JSON.stringify(info));
+
+    res.json({
+      message: "Email for resetting password sent. Please check your email.",
+    });
   } catch (err) {
     const error = new HttpError(
       "Reset password failed, please try again.",
@@ -56,29 +71,16 @@ exports.resetPassword = async (req, res, next) => {
     );
     return next(error);
   }
-  transporter.sendMail({
-    to: email,
-    from: "node@node-complete.com",
-    subject: "Password reset",
-    html: `
-            <p>You requested a password reset</p>
-            <p>Click this <a href="http://localhost:3000/user/reset-password/${resetToken}">link</a> to set a new password.</p>
-          `,
-  });
-
-  res.json({
-    message: "Email for reseting password sent. Please check your email.",
-  });
 };
 
 exports.getNewPassword = async (req, res, next) => {
   const token = req.params.token;
-
+  console.log("token", token);
   let existingUser;
   try {
     existingUser = await User.findOne({
-      resetToken: token,
-      resetTokenExpiration: { $gt: Date.now() },
+      resetPasswordToken: token,
+      resetPasswordTokenExpiration: { $gt: Date.now() },
     });
   } catch (err) {
     const error = new HttpError(
@@ -87,7 +89,6 @@ exports.getNewPassword = async (req, res, next) => {
     );
     return next(error);
   }
-
   if (!existingUser) {
     const error = new HttpError(
       "Could not identify user, credentials seem to be wrong.",
@@ -97,19 +98,19 @@ exports.getNewPassword = async (req, res, next) => {
   }
 
   res.json({
-    userId: existingUser.id,
+    userId: existingUser._id,
     token,
   });
 };
 
 exports.postNewPassword = async (req, res, next) => {
-  const { newPassword, passwordToken, userId } = req.body;
+  const { password: newPassword, passwordToken, userId } = req.body;
 
   let existingUser;
   try {
     existingUser = await User.findOne({
-      resetToken: passwordToken,
-      resetTokenExpiration: { $gt: Date.now() },
+      resetPasswordToken: passwordToken,
+      resetPasswordTokenExpiration: { $gt: Date.now() },
       _id: userId,
     });
   } catch (err) {
@@ -128,17 +129,9 @@ exports.postNewPassword = async (req, res, next) => {
     return next(error);
   }
 
-  let hashedPassword;
-  try {
-    hashedPassword = await bcrypt.hash(newPassword, 12);
-  } catch (err) {
-    const error = new HttpError("Could not create user.Please try again!", 422);
-    return next(error);
-  }
-
-  existingUser.password = hashedPassword;
-  existingUser.resetToken = undefined;
-  existingUser.resetTokenExpiration = undefined;
+  existingUser.password = newPassword;
+  existingUser.resetPasswordToken = undefined;
+  existingUser.resetPasswordTokenExpiration = undefined;
   try {
     await existingUser.save();
   } catch (err) {

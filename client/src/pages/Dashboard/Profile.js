@@ -28,7 +28,22 @@ const Profile = () => {
       displayAlert();
       return;
     }
-    updateUser({ name, lastName, location, imageUrl });
+    // updateUser({ name, lastName, location, imageUrl });
+    const { email, password } = user;
+    const formData = new FormData();
+    for (const [key, value] of Object.entries({
+      email,
+      password,
+      name,
+      lastName,
+      location,
+      imageUrl,
+    })) {
+      formData.append(key, value);
+    }
+    updateUser({
+      currentUser: formData,
+    });
   };
 
   return (

@@ -7,7 +7,7 @@ const requireLocalAuth = (req, res, next) => {
       return next(err);
     }
     if (!user) {
-      return res.status(422).send(info);
+      return res.status(422).json({ info });
     }
     req.user = user;
     return next();

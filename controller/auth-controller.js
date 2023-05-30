@@ -60,7 +60,6 @@ exports.login = async (req, res, next) => {
 };
 exports.updateUser = async (req, res, next) => {
   const { lastName, location, name } = req.body;
-
   if (!lastName || !location) {
     const error = new HttpError(
       "Please provide all values",
@@ -88,6 +87,7 @@ exports.updateUser = async (req, res, next) => {
     // in this case only id,email
     // if other properties included, must re-generate
     const token = user.generateJWT();
+
     res.status(StatusCodes.OK).json({ user, token, location: user.location });
   } catch (error) {
     return next(error);

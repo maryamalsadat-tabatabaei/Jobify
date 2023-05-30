@@ -269,6 +269,27 @@ const reducer = (state, action) => {
         user: action.payload.user,
       };
     }
+    case actions.RESET_PASSWORD_PENDING: {
+      return { ...state, isLoading: true };
+    }
+    case actions.RESET_PASSWORD_SUCCED: {
+      return {
+        ...state,
+        isLoading: false,
+        showAlert: true,
+        alertType: "success",
+        alertText: action.payload.message,
+      };
+    }
+    case actions.RESET_PASSWORD_REJECTED: {
+      return {
+        ...state,
+        isLoading: false,
+        showAlert: true,
+        alertType: "danger",
+        alertText: action.payload.msg,
+      };
+    }
     default:
       throw new Error(`no such action: ${action.type}`);
   }

@@ -27,7 +27,7 @@ const UserSchema = new mongoose.Schema({
     // required: [true, "Please provide password"],
     minLength: 6,
     maxLength: 20,
-    // select: false,
+    select: false,
   },
   googleId: {
     type: String,
@@ -46,15 +46,16 @@ const UserSchema = new mongoose.Schema({
   },
   credits: { type: Number, default: 0 },
   imageUrl: String,
-  resetToken: String,
-  resetTokenExpiration: Date,
+  resetPasswordToken: { type: String },
+  resetPasswordTokenExpiration: Date,
 });
 
 UserSchema.pre("save", async function (next) {
   const user = this;
   try {
-    if (!user.isModified("password")) return next();
-
+    if (!user.isModified("password")) {
+      return next();
+    }
     // Check if the user has a password (local authentication) or not (Google authentication)
     if (user.password) {
       // User has a password (local authentication)
@@ -62,7 +63,6 @@ UserSchema.pre("save", async function (next) {
       const hashedPassword = await bcrypt.hash(user.password, salt);
       user.password = hashedPassword;
     }
-
     // Proceed with saving the user
     next();
   } catch (error) {

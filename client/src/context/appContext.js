@@ -98,19 +98,12 @@ const AppProvider = ({ children }) => {
   };
 
   const authenticateUser = async ({ currentUser, endPoint, alertText }) => {
-    console.log(
-      "currentUser, endPoint, alertText ",
-      currentUser,
-      endPoint,
-      alertText
-    );
     dispatch({ type: actions.AUTHENTICATE_USER_PENDING });
     try {
       const response = await axios.post(
         `http://localhost:8000/api/v1/auth/${endPoint}`,
         currentUser
       );
-      console.log("///////////////////", response);
       const { user, token, location } = response.data;
       dispatch({
         type: actions.AUTHENTICATE_USER_SUCCED,
@@ -121,11 +114,7 @@ const AppProvider = ({ children }) => {
           alertText,
         },
       });
-      addUserToLocalStorage({
-        user,
-        token,
-        location,
-      });
+      addUserToLocalStorage(user, token, location);
     } catch (error) {
       dispatch({
         type: actions.AUTHENTICATE_USER_REJECTED,
@@ -142,21 +131,16 @@ const AppProvider = ({ children }) => {
     removeUserFromLocalStorage();
   };
 
-  const updateUser = async (userData) => {
+  const updateUser = async ({ currentUser }) => {
     dispatch({ type: actions.UPDATE_USER_PENDING });
     try {
-      const formData = new FormData();
-      for (const [key, value] of Object.entries(userData)) {
-        formData.append(key, value);
-      }
-
-      const response = authRequest.patch("/auth/updateUser", formData);
+      const response = await authRequest.patch("/auth/updateUser", currentUser);
       const { user, token, location } = response.data;
       dispatch({
         type: actions.UPDATE_USER_SUCCED,
         payload: { user, location, token },
       });
-      addUserToLocalStorage({ user, token, location });
+      addUserToLocalStorage(user, token, location);
       // if no token
       // addUserToLocalStorage({ user, location, token: initialState.token });
     } catch (error) {
@@ -365,6 +349,29 @@ const AppProvider = ({ children }) => {
     dispatch({ type: actions.GOOGLE_SIGN_IN, payload: { user, token } });
     addUserToLocalStorage(user, token);
   };
+
+  const resetPassword = async (email) => {
+    dispatch({ type: actions.RESET_PASSWORD_PENDING });
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/v1/user/resetPassword",
+        { email }
+      );
+      const { message } = response.data;
+      dispatch({
+        type: actions.RESET_PASSWORD_SUCCED,
+        payload: {
+          message,
+        },
+      });
+    } catch (error) {
+      dispatch({
+        type: actions.RESET_PASSWORD_REJECTED,
+        payload: { msg: error.response.data.msg },
+      });
+    }
+    clearAlert();
+  };
   return (
     <AppContext.Provider
       value={{
@@ -389,6 +396,7 @@ const AppProvider = ({ children }) => {
         sendEmail,
         googleSignIn,
         addUserToLocalStorage,
+        resetPassword,
       }}
     >
       {children}
