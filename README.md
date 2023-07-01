@@ -3,13 +3,19 @@
 This is a job seeker MERN app using Express.js, React, MongoDB, and Node.js.<br>
 Deployed via Render https://mern-app-jobify.onrender.com.
 
+<img src="https://github.com/maryamalsadat-tabatabaei/Jobify/assets/87692864/48a8552f-fc68-4443-8019-bb41fe250055" alt="Register Page" width="400" height="300">
+<img src="https://github.com/maryamalsadat-tabatabaei/Jobify/assets/87692864/c3a7d1e2-970a-464a-bcd2-5e5da7acdcd9" alt="Login Page - Users can also Reset their password and Login with GoogleOauth" width="400" height="300">
+<img src="https://github.com/maryamalsadat-tabatabaei/Jobify/assets/87692864/7a03a559-b5a1-4142-a623-979bf66e9851" alt="Job Searching Page" width="400" height="300">
+<img src="https://github.com/maryamalsadat-tabatabaei/Jobify/assets/87692864/02ed98ea-7639-4382-aaaa-98d22799f41c" alt="Job Status Page" width="400" height="300">
+
 ## Table of Contents
 
 - [Installation](#installation)
 - [Usage](#usage)
 - [Configuration](#configuration)
 - [API Documentation](#api-documentation)
-- [Credits](#credits)
+- [Project Background](#project-background)
+- [New Features](#new-features)
 
 ## Installation
 
@@ -65,18 +71,18 @@ const config = {
 `POST /api/v1/stripe/charge"`: Charge the credit of the user. Requires a JWT in the request headers.<br>
 `POST /api/v1/upload`: Upload the image to the AWS S3 bucket. Requires a JWT in the request headers and the rate limit of 10 pic per 15 min.
 
-## Credits
+## Project Background
 
- Passport: Used for Google authentication<br>
- Stripe: Used for charging the credit <br>
- SendGrid: Used for email <br>
- John Smilga: The mern-jobify course<br>
+This project is based on the MERN Jobify course by John Smilga that I completed. It served as the foundation for my work, and I have since added several new features and enhancements. The course provided valuable knowledge and guidance, and I built upon that foundation to extend the project's functionality and address specific requirements.
 
-<img src="https://github.com/maryamalsadat-tabatabaei/Jobify/assets/87692864/48a8552f-fc68-4443-8019-bb41fe250055" alt="Register Page" width="400" height="300">
-<img src="https://github.com/maryamalsadat-tabatabaei/Jobify/assets/87692864/c3a7d1e2-970a-464a-bcd2-5e5da7acdcd9" alt="Login Page - Users can also Reset their password and Login with GoogleOauth" width="400" height="300">
-<img src="https://github.com/maryamalsadat-tabatabaei/Jobify/assets/87692864/7a03a559-b5a1-4142-a623-979bf66e9851" alt="Job Searching Page" width="400" height="300">
-<img src="https://github.com/maryamalsadat-tabatabaei/Jobify/assets/87692864/02ed98ea-7639-4382-aaaa-98d22799f41c" alt="Job Status Page" width="400" height="300">
+## New Features
 
+- Feature 1: Add the reset password functionality.
+- Feature 2: Add uploading image functionality.
+- Feature 3: Add stripe for charging the credit for the user.
+- Feature 4: Add Google-OAuth authentication.
+- Feature 5: Add email functionality.
 
+These additional features enhance the capabilities of the original project and provide added value in terms of functionality, performance, or user experience. They were implemented based on the requirements and insights gained from the course, as well as personal experimentation and problem-solving.
 
-
+I would like to express my gratitude to the John Smilga course instructors for their teachings and inspiration, which played a significant role in the development of this project.
