@@ -27,25 +27,31 @@ Deployed via Render https://mern-app-jobify.onrender.com.
 
 To run the project, use the following command:
 
-``bash<br>
-npm run dev
+<pre><code>npm run dev</code></pre>
 
 ## Configuration
 
-To configure the project, open the config.js folder and dev.js file and modify the following variables:
+To configure the project, create .env file and add the following variables:
 
-  - googleClientID,
-  - googleClientSecret,
-  - mongoURI,
-  - cookieKey,
-  - stripePublishableKey,
-  - stripeSecretKey,
-  - sendGridKey,
-  - redirectDomain,
+- PORT
+- GOOGLE_MAP_API_KEY
+- MONGO_DB_PASSWORD
+- MONGO_DB_USER
+- MONGO_DB_COLLECTION
+- MONGO_DB_PORT
+- JWT_SECRET
+- GOOGLE_OAUTH_CLIENT_ID
+- GOOGLE_OAUTH_CLIENT_SECRE
+- SESSION_COOKIE_KEY
+- SENDGRID_API_KEY
+- STRIPE_SECRET_KEY
+- STRIPE_PUBLISHABLE_KEY
+- AWS_ACCESS_KEY
+- AWS_SECRET_ACCESS_KEY
 
 To configure the client, open the client folder and .env.development file and modify the following variables:
 
-const config = {
+`const config` = {
   stripeKey: `Your-stripe-key`,
   googleClientID: `Your-google-client-id-key`
 };
@@ -73,16 +79,20 @@ const config = {
 
 ## Project Background
 
-This project is based on the MERN Jobify course by John Smilga that I completed. It served as the foundation for my work, and I have since added several new features and enhancements. The course provided valuable knowledge and guidance, and I built upon that foundation to extend the project's functionality and address specific requirements.
+This project is based on the work of [John Smilga](https://github.com/john-smilga/mern-course-jobify), and I would like to acknowledge their contributions. I have made modifications and added new features to extend the functionality of the original project and I built upon that foundation to extend the project's functionality and address specific requirements. However, the core concept and initial implementation were inspired by the course and the work of the original author.
 
 ## New Features
 
-- Feature 1: Add the reset password functionality.
-- Feature 2: Add uploading image functionality.
-- Feature 3: Add stripe for charging the credit for the user.
-- Feature 4: Add Google-OAuth authentication.
-- Feature 5: Add email functionality.
+1. **Reset Password Functionality**: Implemented the ability for users to reset their passwords if they forget or need to update them.
+
+2. **Uploading Image Functionality**: Added the feature that allows users to upload images to enhance their profiles.
+
+3. **Stripe Integration for Credit Charging**: Integrated Stripe payment processing to enable users to charge and manage credit on their accounts.
+
+4. **Google-OAuth Authentication**: Introduced Google-OAuth as an additional authentication option, allowing users to sign in with their Google accounts.
+
+5. **Email Functionality**: Integrated email functionality to send important notifications, updates, and notifications to users.
 
 These additional features enhance the capabilities of the original project and provide added value in terms of functionality, performance, or user experience. They were implemented based on the requirements and insights gained from the course, as well as personal experimentation and problem-solving.
 
-I would like to express my gratitude to the John Smilga course instructors for their teachings and inspiration, which played a significant role in the development of this project.
+I would like to express my gratitude to the John Smilga course instructors for their teachings and inspiration, which played a significant role in the development of this project. Please note that this project is not affiliated with or endorsed by John Smilga, and any issues or inquiries regarding this modified version should be directed to my GitHub repository.
