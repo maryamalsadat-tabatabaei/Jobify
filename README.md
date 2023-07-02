@@ -7,6 +7,11 @@ Deployed via Render https://mern-app-jobify.onrender.com.
 <img src="https://github.com/maryamalsadat-tabatabaei/Jobify/assets/87692864/c3a7d1e2-970a-464a-bcd2-5e5da7acdcd9" alt="Login Page - Users can also Reset their password and Login with GoogleOauth" width="300" height="300">
 <img src="https://github.com/maryamalsadat-tabatabaei/Jobify/assets/87692864/7a03a559-b5a1-4142-a623-979bf66e9851" alt="Job Searching Page" width="300" height="300">
 <img src="https://github.com/maryamalsadat-tabatabaei/Jobify/assets/87692864/02ed98ea-7639-4382-aaaa-98d22799f41c" alt="Job Status Page" width="300" height="300">
+<img src="https://github.com/maryamalsadat-tabatabaei/Jobify/assets/87692864/e9be95be-2869-4505-b35c-63ebb0cc5a5f" alt="Reset Password Page" width="300" height="300">
+<img src="https://github.com/maryamalsadat-tabatabaei/Jobify/assets/87692864/5d235a57-c3b8-493a-87a0-c6566dda42e9" alt="Survey Email Page" width="300" height="300">
+<img src="https://github.com/maryamalsadat-tabatabaei/Jobify/assets/87692864/8681c9e6-48a9-4367-a510-60397e8baf67" alt="Add Job Page" width="300" height="300">
+<img src="https://github.com/maryamalsadat-tabatabaei/Jobify/assets/87692864/ced1dcd7-1e0d-4163-9b7d-210558a23ff4" alt="Update User Page" width="300" height="300">
+<img src="https://github.com/maryamalsadat-tabatabaei/Jobify/assets/87692864/dd5e5e08-d9fa-4a60-8710-b1f979708a9c" alt="Jon Status Bar Chart Page" width="300" height="300">
 
 ## Table of Contents
 
